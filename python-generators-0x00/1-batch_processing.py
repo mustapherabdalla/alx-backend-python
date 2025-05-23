@@ -19,7 +19,7 @@ def batch_processing(batch_size):
     for batch in batches:
         for i in range(0, len(batch)):
             user = batch[i]
-            if user['age'] < 25:
+            if user['age'] > 25:
                 continue
             print(user)
         print("\n\n")
