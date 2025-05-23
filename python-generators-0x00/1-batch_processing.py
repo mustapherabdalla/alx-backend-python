@@ -10,7 +10,7 @@ def stream_users_in_batches(batch_size):
     for i in range(0, len(rows), batch_size):
         batches = rows[i: i + batch_size]
         results = [batch for batch in batches]
-        return results
+        yield results
     return None
 
 def batch_processing(batch_size):
