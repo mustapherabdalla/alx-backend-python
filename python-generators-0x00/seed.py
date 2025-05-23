@@ -50,3 +50,4 @@ def insert_data(connection, data):
     query = """INSERT INTO user_data (user_id, name, email, age) VALUES (%s, %s, %s, %s)"""
     cursor.executemany(query, batch)
     cursor.close()
+    connection.commit()
