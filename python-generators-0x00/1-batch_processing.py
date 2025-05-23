@@ -11,7 +11,7 @@ def stream_users_in_batches(batch_size):
         batches = rows[i: i + batch_size]
         results = [batch for batch in batches]
         return results
-
+    return None
 
 def batch_processing(batch_size):
     batches = stream_users_in_batches(batch_size)
