@@ -1,5 +1,5 @@
 import mysql.connector
-from _datetime import datetime
+from datetime import datetime
 
 
 def log_queries():
