@@ -1,9 +1,12 @@
 import mysql.connector
+from _datetime import datetime
+
 
 def log_queries():
     def decorator(func):
         def wrapper(query, *args, **kwargs):
-            print(query)
+            time_executed = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+            print(query, "executed at: ", time_executed)
             return func(query, *args, **kwargs)
         return wrapper
     return decorator
