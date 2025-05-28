@@ -1,39 +1,44 @@
 # !/usr/bin/env python3
-"""Test module for utils.get_json function."""
+"""Test module for utils.memoize decorator."""
 import unittest
-from unittest.mock import patch, Mock
-from parameterized import parameterized
-from utils import get_json
+from unittest.mock import patch
+from utils import memoize
 
 
-class TestGetJson(unittest.TestCase):
-    """Test class for get_json function."""
+class TestMemoize(unittest.TestCase):
+    """Test class for memoize decorator."""
 
-    @parameterized.expand([
-        ("http://example.com", {"payload": True}),
-        ("http://holberton.io", {"payload": False}),
-    ])
-    def test_get_json(self, test_url: str, test_payload: dict) -> None:
-        """Test get_json returns the expected result without making actual HTTP calls.
+    def test_memoize(self) -> None:
+        """Test that memoize caches the result properly."""
 
-        Args:
-            test_url: URL to mock
-            test_payload: Expected JSON response
-        """
-        # Create a mock response object
-        mock_response = Mock()
-        mock_response.json.return_value = test_payload
+        class TestClass:
+            """Test class with memoized property."""
 
-        # Patch requests.get to return our mock response
-        with patch('requests.get', return_value=mock_response) as mock_get:
-            # Call the function
-            result = get_json(test_url)
+            def a_method(self) -> int:
+                """Method to be mocked."""
+                return 42
 
-            # Verify requests.get was called exactly once with test_url
-            mock_get.assert_called_once_with(test_url)
+            @memoize
+            def a_property(self) -> int:
+                """Memoized property that calls a_method."""
+                return self.a_method()
 
-            # Verify the result matches test_payload
-            self.assertEqual(result, test_payload)
+        # Create instance of test class
+        test_instance = TestClass()
+
+        # Patch a_method to track calls and return 42
+        with patch.object(TestClass, 'a_method', return_value=42) as mock_method:
+            # First call - should call a_method
+            result1 = test_instance.a_property()
+            # Second call - should use cached result
+            result2 = test_instance.a_property()
+
+            # Verify results are correct
+            self.assertEqual(result1, 42)
+            self.assertEqual(result2, 42)
+
+            # Verify a_method was called only once
+            mock_method.assert_called_once()
 
 
 if __name__ == '__main__':
