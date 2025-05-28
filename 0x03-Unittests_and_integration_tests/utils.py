@@ -3,26 +3,14 @@
 This module provides functions to access and manipulate nested dictionary structures.
 """
 
-from typing import Any, Dict, Sequence, Union
+from typing import Any, Sequence
 
 
-def access_nested_map(nested_map: Dict, path: Sequence) -> Any:
-    """Access a value in a nested dictionary using a tuple path.
-
-    Args:
-        nested_map: The nested dictionary to access
-        path: Sequence of keys representing the path to the value
-
-    Returns:
-        The value found at the specified path
-
-    Example:
-        >>> access_nested_map({"a": {"b": 2}}, ("a", "b"))
-        2
-    """
+def access_nested_map(nested_map: dict, path: Sequence) -> Any:
+    """Access a value in a nested dictionary using a tuple path."""
     current = nested_map
     for key in path:
-        if key not in current:
+        if not isinstance(current, dict) or key not in current:
             raise KeyError(key)
         current = current[key]
     return current
