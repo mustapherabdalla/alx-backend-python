@@ -1,26 +1,19 @@
 #!/usr/bin/env python3
-"""Client for interacting with GitHub organizations API."""
-from typing import Dict
-from utils import get_json
-
+from functools import cached_property
 
 class GithubOrgClient:
-    """Client for fetching GitHub organization information."""
+    """A client for interacting with GitHub organization APIs."""
 
-    def __init__(self, org_name: str) -> None:
-        """Initialize with an organization name.
-
-        Args:
-            org_name: Name of the GitHub organization
-        """
+    def __init__(self, org_name: str):
+        """Initialize the client with a GitHub organization name."""
         self._org_name = org_name
 
     @property
-    def org(self) -> Dict:
-        """Fetch organization information.
+    def org(self):
+        """Fetch and return the organization's data (to be mocked in tests)."""
+        raise NotImplementedError("This should be mocked in tests")
 
-        Returns:
-            Dictionary containing organization data from GitHub API
-        """
-        url = f"https://api.github.com/orgs/{self._org_name}"
-        return get_json(url)
+    @cached_property
+    def _public_repos_url(self):
+        """Return the repos_url from the organization's data (memoized)."""
+        return self.org["repos_url"]
