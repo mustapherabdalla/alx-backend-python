@@ -1,19 +1,50 @@
 #!/usr/bin/env python3
-from functools import cached_property
+import requests
+from typing import List, Dict
+
+
+def get_json(url: str) -> Dict:
+    """
+    Get JSON data from a URL
+
+    Args:
+        url: The URL to fetch JSON data from
+
+    Returns:
+        A dictionary containing the JSON response
+    """
+    response = requests.get(url)
+    return response.json()
+
 
 class GithubOrgClient:
-    """A client for interacting with GitHub organization APIs."""
+    """A client for GitHub organization operations"""
 
-    def __init__(self, org_name: str):
-        """Initialize the client with a GitHub organization name."""
+    def __init__(self, org_name: str) -> None:
+        """
+        Initialize the client with an organization name
+
+        Args:
+            org_name: Name of the GitHub organization
+        """
         self._org_name = org_name
 
     @property
-    def org(self):
-        """Fetch and return the organization's data (to be mocked in tests)."""
-        raise NotImplementedError("This should be mocked in tests")
+    def _public_repos_url(self) -> str:
+        """
+        Get the URL for the organization's public repositories
 
-    @cached_property
-    def _public_repos_url(self):
-        """Return the repos_url from the organization's data (memoized)."""
-        return self.org["repos_url"]
+        Returns:
+            The API URL for public repos
+        """
+        return f"https://api.github.com/orgs/{self._org_name}/repos"
+
+    def public_repos(self) -> List[str]:
+        """
+        Get the list of public repository names for the organization
+
+        Returns:
+            List of repository names
+        """
+        repos_data = get_json(self._public_repos_url)
+        return [repo["name"] for repo in repos_data]
