@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
+"""client.py - GitHub API client implementation"""
 import requests
-from typing import Dict, List
+from typing import List, Dict, Optional
 
 
 def get_json(url: str) -> Dict:
@@ -22,20 +23,22 @@ class GithubOrgClient:
         """URL for organization's public repos"""
         return f"https://api.github.com/orgs/{self._org_name}/repos"
 
-    def public_repos(self) -> List[str]:
-        """Get list of public repository names"""
-        repos_data = get_json(self._public_repos_url)
-        return [repo["name"] for repo in repos_data]
-
-    def has_license(self, repo: Dict, license_key: str) -> bool:
+    def public_repos(self, license: Optional[str] = None) -> List[str]:
         """
-        Check if a repository has a specific license
-
+        Get list of public repository names, optionally filtered by license
+        
         Args:
-            repo: Dictionary containing repo information
-            license_key: The license key to check for
-
+            license: Optional license key to filter by
+            
         Returns:
-            bool: True if the repo has the license, False otherwise
+            List of repository names
         """
-        return repo.get("license", {}).get("key") == license_key
+        repos_data = get_json(self._public_repos_url)
+        
+        if license:
+            return [
+                repo["name"] for repo in repos_data
+                if repo.get("license", {}).get("key") == license
+            ]
+        return [repo["name"] for repo in repos_data]
+    
