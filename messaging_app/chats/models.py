@@ -1,13 +1,14 @@
 import uuid
-from django.db import models # type: ignore
-from django.contrib.auth.models import AbstractUser # type: ignore
-from django.utils.translation import gettext_lazy as _ # type: ignore
+from django.db import models
+from django.contrib.auth.models import AbstractUser
 
 class User(AbstractUser):
     user_id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False, unique=True)
-    email = models.EmailField(max_length=200, unique=True, blank=False, null=False)
     first_name = models.CharField(max_length=150, null=False, blank=False)
     last_name = models.CharField(max_length=150, null=False, blank=False)
+    email = models.EmailField(max_length=200, unique=True, blank=False, null=False)
+    phone_number = models.CharField(max_length=100, null=False, blank=False)
+    password = models.CharField(max_length=200, null=False, blank=False)
 
 
 class Conversation(models.Model):
